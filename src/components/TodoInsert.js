@@ -5,12 +5,12 @@ import './TodoInsert.scss';
 const TodoInsert = ({ onInsert }) => {
   const [value, setValue] = useState('');
 
-  const onChange = useCallback(e => {
+  const onChange = useCallback((e) => {
     setValue(e.target.value);
   }, []);
 
   const onSubmit = useCallback(
-    e => {
+    (e) => {
       onInsert(value);
       setValue(''); // value 값 초기화
 
@@ -23,11 +23,15 @@ const TodoInsert = ({ onInsert }) => {
 
   return (
     <form className="TodoInsert" onSubmit={onSubmit}>
-      <input
-        placeholder="할 일을 입력하세요"
-        value={value}
-        onChange={onChange}
-      />
+      {value ? (
+        <textarea value={value} onChange={onChange} />
+      ) : (
+        <input
+          placeholder="할 일을 입력하세요"
+          value={value}
+          onChange={onChange}
+        />
+      )}
       <button type="submit">
         <MdAdd />
       </button>
