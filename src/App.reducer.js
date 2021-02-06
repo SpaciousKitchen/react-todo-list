@@ -22,10 +22,15 @@ function todoReducer(todos, action) {
       return todos.concat(action.todo);
     case 'REMOVE': // 제거
       // { type: 'REMOVE', id: 1 }
-      return todos.filter(todo => todo.id !== action.id);
+      return todos.filter((todo) => todo.id !== action.id);
     case 'TOGGLE': // 토글
       // { type: 'REMOVE', id: 1 }
-      return todos.map(todo =>
+      return todos.map((todo) =>
+        todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
+      );
+    case 'EDIT': // 수정
+      // { type: 'REMOVE', id: 1 }
+      return todos.map((todo) =>
         todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
       );
     default:
@@ -40,7 +45,7 @@ const App = () => {
   // ref 를 사용하여 변수 담기
   const nextId = useRef(2501);
 
-  const onInsert = useCallback(text => {
+  const onInsert = useCallback((text) => {
     const todo = {
       id: nextId.current,
       text,
@@ -50,11 +55,11 @@ const App = () => {
     nextId.current += 1; // nextId 1 씩 더하기
   }, []);
 
-  const onRemove = useCallback(id => {
+  const onRemove = useCallback((id) => {
     dispatch({ type: 'REMOVE', id });
   }, []);
 
-  const onToggle = useCallback(id => {
+  const onToggle = useCallback((id) => {
     dispatch({ type: 'TOGGLE', id });
   }, []);
 
