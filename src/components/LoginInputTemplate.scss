@@ -1,0 +1,55 @@
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .ContainLogin{
+    padding: 20px;
+    background: #22b8cf;
+    display: flex;
+    flex: 0.5;
+    height: 300px;
+    border-radius: 0.28571429rem;
+    flex-direction: column;
+
+  }
+  label{
+    color: white;
+    padding: 0.5rem;
+    font-size: 1.125rem;
+  }
+
+  input{
+    border-radius: 4px;
+    background: #495057;
+    outline: none;
+    border: none;
+    padding: 0.5rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    color: white;
+   
+  }
+  button{
+    margin-top: auto;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    background: #868e96;
+    color: white;
+    margin-right: 5px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1.5rem;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.1s background ease-in;
+  }
+}
