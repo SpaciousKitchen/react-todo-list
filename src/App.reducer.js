@@ -3,6 +3,13 @@ import TodoTemplate from './components/TodoTemplate';
 import TodoInsert from './components/TodoInsert';
 import TodoList from './components/TodoList';
 import TodoEdit from './components/TodoEdit';
+import LoginInputTemplate from './components/LoginInputTemplate';
+import './App.css';
+const init = {
+  userInfo: null,
+  todos: [],
+};
+
 function createBulkTodos() {
   const array = [];
   for (let i = 1; i <= 2500; i++) {
@@ -15,37 +22,70 @@ function createBulkTodos() {
   return array;
 }
 
-function todoReducer(todos, action) {
+function appReducer(state = init, action) {
   switch (action.type) {
+    case 'LOGIN': // 새로 추가
+      return {
+        ...state,
+        userInfo: { userId: action.userId },
+      };
+    case 'LOGOUT': // 새로 추가
+      return {
+        ...state,
+        userInfo: null,
+      };
     case 'INSERT': // 새로 추가
       // { type: 'INSERT', todo: { id: 1, text: 'todo', checked: false } }
-      return todos.concat(action.todo);
+      return {
+        ...state,
+        todos: state.todos.concat(action.todo),
+      };
     case 'REMOVE': // 제거
       // { type: 'REMOVE', id: 1 }
-      return todos.filter((todo) => todo.id !== action.id);
+      return {
+        ...state,
+        todos: state.todos.filter((todo) => todo.id !== action.id),
+      };
     case 'TOGGLE': // 토글
       // { type: 'REMOVE', id: 1 }
-      return todos.map((todo) =>
-        todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
-      );
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
+        ),
+      };
     case 'EDIT': // 수정
       // { type: 'REMOVE', id: 1 }
-      return todos.map((todo) =>
-        todo.id === action.id ? { ...todo, text: action.editText } : todo,
-      );
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo.id === action.id ? { ...todo, text: action.editText } : todo,
+        ),
+      };
     default:
-      return todos;
+      return state;
   }
 }
 
 const App = () => {
-  const [todos, dispatch] = useReducer(todoReducer, undefined, createBulkTodos);
+  const [state, dispatch] = useReducer(appReducer, init);
   const [editMode, setEditMode] = useState(false);
+  const [loginMode, setLoginMode] = useState(false);
   const [initTodo, setInitTodo] = useState('');
 
   // 고유 값으로 사용 될 id
   // ref 를 사용하여 변수 담기
   const nextId = useRef(2501);
+  console.log(state);
+
+  const onLogin = useCallback((userId) => {
+    console.log(userId);
+    dispatch({ type: 'LOGIN', userId });
+  }, []);
+
+  const onLogout = useCallback((userId) => {
+    dispatch({ type: 'LOGOUT' });
+  }, []);
 
   const onInsert = useCallback((text) => {
     const todo = {
@@ -53,6 +93,7 @@ const App = () => {
       text,
       checked: false,
     };
+    console.log(todo);
     dispatch({ type: 'INSERT', todo });
     nextId.current += 1; // nextId 1 씩 더하기
   }, []);
@@ -74,25 +115,49 @@ const App = () => {
     setInitTodo(todoOne);
   }, []);
 
-  return (
-    <TodoTemplate>
-      {editMode ? (
-        <TodoEdit
-          onEdit={onEdit}
-          setEditMode={setEditMode}
-          initTodo={initTodo}
-        />
-      ) : (
-        <TodoInsert onInsert={onInsert} />
-      )}
+  const onClickLogin = useCallback((todoOne) => {
+    setLoginMode((pre) => !pre);
+  }, []);
 
-      <TodoList
-        todos={todos}
-        onRemove={onRemove}
-        onClickEdit={onClickEdit}
-        onToggle={onToggle}
-      />
-    </TodoTemplate>
+  return (
+    <>
+      <div className="loginTemplate">
+        {state.userInfo ? (
+          <button className="loginButton" onClick={onLogout}>
+            로그아웃
+          </button>
+        ) : (
+          <button className="loginButton" onClick={onClickLogin}>
+            로그인
+          </button>
+        )}
+
+        {loginMode ? (
+          <LoginInputTemplate onLogin={onLogin} setLoginMode={setLoginMode} />
+        ) : (
+          <></>
+        )}
+      </div>
+      <TodoTemplate>
+        {editMode ? (
+          <TodoEdit
+            onEdit={onEdit}
+            setEditMode={setEditMode}
+            initTodo={initTodo}
+          />
+        ) : (
+          <TodoInsert onInsert={onInsert} />
+        )}
+
+        <TodoList
+          userInfo={state.userInfo}
+          todos={state.todos}
+          onRemove={onRemove}
+          onClickEdit={onClickEdit}
+          onToggle={onToggle}
+        />
+      </TodoTemplate>
+    </>
   );
 };
 
