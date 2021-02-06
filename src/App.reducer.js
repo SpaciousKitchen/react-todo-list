@@ -10,18 +10,6 @@ const init = {
   todos: [],
 };
 
-function createBulkTodos() {
-  const array = [];
-  for (let i = 1; i <= 2500; i++) {
-    array.push({
-      id: i,
-      text: `할 일 ${i}`,
-      checked: false,
-    });
-  }
-  return array;
-}
-
 function appReducer(state = init, action) {
   switch (action.type) {
     case 'LOGIN': // 새로 추가
@@ -79,7 +67,6 @@ const App = () => {
   console.log(state);
 
   const onLogin = useCallback((userId) => {
-    console.log(userId);
     dispatch({ type: 'LOGIN', userId });
   }, []);
 
@@ -87,20 +74,30 @@ const App = () => {
     dispatch({ type: 'LOGOUT' });
   }, []);
 
-  const onInsert = useCallback((text) => {
-    const todo = {
-      id: nextId.current,
-      text,
-      checked: false,
-    };
-    console.log(todo);
-    dispatch({ type: 'INSERT', todo });
-    nextId.current += 1; // nextId 1 씩 더하기
-  }, []);
+  const onInsert = useCallback(
+    (text) => {
+      const todo = {
+        id: nextId.current,
+        text,
+        userId: state.userInfo?.userId,
+        checked: false,
+      };
+      dispatch({ type: 'INSERT', todo });
+      nextId.current += 1; // nextId 1 씩 더하기
+    },
+    [state.userInfo],
+  );
 
-  const onRemove = useCallback((id) => {
-    dispatch({ type: 'REMOVE', id });
-  }, []);
+  const onRemove = useCallback(
+    (id, userId) => {
+      if (!state.userInfo || userId !== state.userInfo?.userId) {
+        alert('본인의 투두 리스트만 삭제 가능합니다.');
+        return;
+      }
+      dispatch({ type: 'REMOVE', id });
+    },
+    [state.userInfo],
+  );
 
   const onToggle = useCallback((id) => {
     dispatch({ type: 'TOGGLE', id });
@@ -110,10 +107,17 @@ const App = () => {
     dispatch({ type: 'EDIT', id, editText });
   }, []);
 
-  const onClickEdit = useCallback((todoOne) => {
-    setEditMode((pre) => !pre);
-    setInitTodo(todoOne);
-  }, []);
+  const onClickEdit = useCallback(
+    (todoOne, userId) => {
+      if (!state.userInfo || userId !== state.userInfo?.userId) {
+        alert('본인의 투두 리스트만 삭제 가능합니다.');
+        return;
+      }
+      setEditMode((pre) => !pre);
+      setInitTodo(todoOne);
+    },
+    [state.userInfo],
+  );
 
   const onClickLogin = useCallback((todoOne) => {
     setLoginMode((pre) => !pre);
