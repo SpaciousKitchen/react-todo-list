@@ -11,6 +11,12 @@ const LoginInputTemplate = ({ onLogin = { onLogin }, setLoginMode }) => {
   const onChangePassword = useCallback((e) => {
     setValuePassword(e.target.value);
   }, []);
+  const onLoginCancel = useCallback(
+    (todoOne) => {
+      setLoginMode((pre) => !pre);
+    },
+    [setLoginMode],
+  );
 
   const onSubmit = useCallback(
     (e) => {
@@ -35,7 +41,7 @@ const LoginInputTemplate = ({ onLogin = { onLogin }, setLoginMode }) => {
         />
         <br />
         <div>
-          <button>취소</button>
+          <button onClick={onLoginCancel}> 취소</button>
           <button type="submit">확인</button>
         </div>
       </form>
