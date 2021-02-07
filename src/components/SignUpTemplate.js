@@ -20,13 +20,11 @@ const SignUpTemplate = ({ setSignUpMode }) => {
 
   const onSubmit = useCallback(
     (e) => {
-      console.log(valueId, valuePassword);
       todo_user_db.ref
         .orderByChild('userId')
         .equalTo(valueId)
         .once('value', async (snapshot) => {
           const todoUserData = await snapshot.val();
-          console.log('존재 ?', todoUserData);
           if (todoUserData) {
             alert('이미 존재하는 아이디입니다.');
             return;
