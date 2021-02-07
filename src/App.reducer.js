@@ -103,6 +103,16 @@ const App = () => {
         alert('본인의 투두 리스트만 삭제 가능합니다.');
         return;
       }
+      todo_db
+        .orderByChild('id')
+        .equalTo(id)
+        .once('value', (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            let nodeKey = childSnapshot.key;
+            todo_db.child(nodeKey).remove();
+          });
+        });
+
       dispatch({ type: 'REMOVE', id });
     },
     [state.userInfo],
