@@ -12,10 +12,10 @@ const TodoEdit = ({ onEdit, setEditMode, initTodo }) => {
 
   const onSubmit = useCallback(
     (e) => {
-      todo_db
+      todo_db 
         .orderByChild('id')
         .equalTo(initTodo.id)
-        .once('value', (snapshot) => {
+        .once('value', (snapshot) => {//파이어베이스 데이터 조회후 업데이트
           snapshot.forEach((childSnapshot) => {
             let nodeKey = childSnapshot.key;
             todo_db.child(nodeKey).update({ text: value });

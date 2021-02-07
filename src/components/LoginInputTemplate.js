@@ -3,7 +3,7 @@ import './LoginInputTemplate.scss';
 import firebase from '../firebase';
 const todo_user_db = firebase.database().ref('todoUser');
 
-const LoginInputTemplate = ({ onLogin = { onLogin }, setLoginMode }) => {
+const LoginInputTemplate = ({ onLogin, setLoginMode }) => {
   const [valueId, setValueId] = useState('');
   const [valuePassword, setValuePassword] = useState('');
 
@@ -22,7 +22,7 @@ const LoginInputTemplate = ({ onLogin = { onLogin }, setLoginMode }) => {
 
   const onSubmit = useCallback(
     (e) => {
-      todo_user_db.ref.on('value', (snapshot) => {
+      todo_user_db.ref.on('value', (snapshot) => { //파이어베이스 데이터 조회
         const todoUserData = snapshot.val();
         for (let id in todoUserData) {
           if (

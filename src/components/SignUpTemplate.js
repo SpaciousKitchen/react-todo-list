@@ -24,7 +24,7 @@ const SignUpTemplate = ({ setSignUpMode }) => {
         .orderByChild('userId')
         .equalTo(valueId)
         .once('value', async (snapshot) => {
-          const todoUserData = await snapshot.val();
+          const todoUserData = await snapshot.val(); //파이어베이스 데이터 조회
           if (todoUserData) {
             alert('이미 존재하는 아이디입니다.');
             return;

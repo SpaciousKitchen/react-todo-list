@@ -10,7 +10,6 @@ import './App.css';
 import firebase from './firebase';
 
 const todo_db = firebase.database().ref('todolist');
-//{id: 1,text: "todo-list-firebase 연결",userId: "123",}
 
 const init = {
   userInfo: null,
@@ -20,22 +19,23 @@ const init = {
 function appReducer(state = init, action) {
   switch (action.type) {
     case 'LOAD_TODO_LIST': {
+      //데이터 불러오기
       return {
         ...state,
         todos: action.todoList,
       };
     }
-    case 'LOGIN':
+    case 'LOGIN': //로그인
       return {
         ...state,
         userInfo: { userId: action.userId },
       };
-    case 'LOGOUT':
+    case 'LOGOUT': //로그아웃
       return {
         ...state,
         userInfo: null,
       };
-    case 'INSERT':
+    case 'INSERT': //추가
       return {
         ...state,
         todos: state.todos.concat(action.todo),
@@ -82,9 +82,6 @@ const App = () => {
     });
   }, []);
 
-  // 고유 값으로 사용 될 id
-  // ref 를 사용하여 변수 담기
-
   const onLogin = useCallback((userId) => {
     dispatch({ type: 'LOGIN', userId });
   }, []);
@@ -129,17 +126,16 @@ const App = () => {
   const onClickEdit = useCallback(
     (todoOne, userId) => {
       if (!state.userInfo || userId !== state.userInfo?.userId) {
-        alert('본인의 투두 리스트만 삭제 가능합니다.');
+        alert('본인의 투두 리스트만 변경 가능합니다.');
         return;
       }
-
       setEditMode((pre) => !pre);
       setInitTodo(todoOne);
     },
     [state.userInfo],
   );
 
-  const onClickLogin = useCallback((todoOne) => {
+  const onClickLogin = useCallback(() => {
     setLoginMode((pre) => !pre);
   }, []);
   const onClickSignUp = useCallback(() => {

@@ -21,7 +21,7 @@ const TodoInsert = ({ onInsert, userInfo }) => {
         userId: userInfo ? userInfo?.userId : '',
       };
 
-      todo_db.push(todo);
+      todo_db.push(todo);//파이어베이스 데이터 추가
       todo.checked = false;
       setValue(''); // value 값 초기화
       onInsert(todo);
