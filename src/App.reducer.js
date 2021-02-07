@@ -132,6 +132,7 @@ const App = () => {
         alert('본인의 투두 리스트만 삭제 가능합니다.');
         return;
       }
+
       setEditMode((pre) => !pre);
       setInitTodo(todoOne);
     },
