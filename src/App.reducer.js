@@ -10,11 +10,13 @@ import TodoTemplate from './components/TodoTemplate';
 import TodoInsert from './components/TodoInsert';
 import TodoList from './components/TodoList';
 import TodoEdit from './components/TodoEdit';
+import SignUpTemplate from './components/SignUpTemplate';
 import LoginInputTemplate from './components/LoginInputTemplate';
 import './App.css';
 import firebase from './firebase';
 
-const todo_db = firebase.database().ref('todolist'); //{}
+const todo_db = firebase.database().ref('todolist');
+//{id: 1,text: "todo-list-firebase 연결",userId: "123",}
 
 const init = {
   userInfo: null,
@@ -72,6 +74,7 @@ const App = () => {
   const [state, dispatch] = useReducer(appReducer, init);
   const [editMode, setEditMode] = useState(false);
   const [loginMode, setLoginMode] = useState(false);
+  const [signUpMode, setSignUpMode] = useState(false);
   const [initTodo, setInitTodo] = useState('');
 
   useEffect(() => {
@@ -145,10 +148,16 @@ const App = () => {
   const onClickLogin = useCallback((todoOne) => {
     setLoginMode((pre) => !pre);
   }, []);
+  const onClickSignUp = useCallback(() => {
+    setSignUpMode((pre) => !pre);
+  }, []);
 
   return (
     <>
       <div className="loginTemplate">
+        <button className="loginButton" onClick={onClickSignUp}>
+          회원가입
+        </button>
         {state.userInfo ? (
           <button className="loginButton" onClick={onLogout}>
             로그아웃
@@ -159,6 +168,7 @@ const App = () => {
           </button>
         )}
 
+        {signUpMode ? <SignUpTemplate setSignUpMode={setSignUpMode} /> : <></>}
         {loginMode ? (
           <LoginInputTemplate onLogin={onLogin} setLoginMode={setLoginMode} />
         ) : (
