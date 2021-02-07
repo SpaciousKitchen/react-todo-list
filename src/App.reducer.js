@@ -1,10 +1,4 @@
-import React, {
-  useReducer,
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useReducer, useCallback, useState, useEffect } from 'react';
 
 import TodoTemplate from './components/TodoTemplate';
 import TodoInsert from './components/TodoInsert';
@@ -90,7 +84,6 @@ const App = () => {
 
   // 고유 값으로 사용 될 id
   // ref 를 사용하여 변수 담기
-  const nextId = useRef(2501);
 
   const onLogin = useCallback((userId) => {
     dispatch({ type: 'LOGIN', userId });
@@ -100,19 +93,9 @@ const App = () => {
     dispatch({ type: 'LOGOUT' });
   }, []);
 
-  const onInsert = useCallback(
-    (text) => {
-      const todo = {
-        id: nextId.current,
-        text,
-        userId: state.userInfo?.userId,
-        checked: false,
-      };
-      dispatch({ type: 'INSERT', todo });
-      nextId.current += 1; // nextId 1 씩 더하기
-    },
-    [state.userInfo],
-  );
+  const onInsert = useCallback((todo) => {
+    dispatch({ type: 'INSERT', todo });
+  }, []);
 
   const onRemove = useCallback(
     (id, userId) => {
@@ -183,7 +166,7 @@ const App = () => {
             initTodo={initTodo}
           />
         ) : (
-          <TodoInsert onInsert={onInsert} />
+          <TodoInsert onInsert={onInsert} userInfo={state?.userInfo} />
         )}
 
         <TodoList

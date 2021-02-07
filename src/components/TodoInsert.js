@@ -1,8 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { MdAdd } from 'react-icons/md';
 import './TodoInsert.scss';
+import faker from 'faker';
+import firebase from '../firebase';
+const todo_db = firebase.database().ref('todolist');
 
-const TodoInsert = ({ onInsert, onEdit }) => {
+const TodoInsert = ({ onInsert, userInfo }) => {
   const [value, setValue] = useState('');
 
   const onChange = useCallback((e) => {
@@ -11,11 +14,20 @@ const TodoInsert = ({ onInsert, onEdit }) => {
 
   const onSubmit = useCallback(
     (e) => {
-      onInsert(value);
+      const todo = {
+        id: faker.random.uuid(),
+        //firebase에서 id 자동형성이 안되므로 임의로 넣어줌
+        text: value,
+        userId: userInfo ? userInfo?.userId : '',
+      };
+
+      todo_db.push(todo);
+      todo.checked = false;
       setValue(''); // value 값 초기화
+      onInsert(todo);
       e.preventDefault();
     },
-    [onInsert, value],
+    [onInsert, userInfo, value],
   );
 
   return (
