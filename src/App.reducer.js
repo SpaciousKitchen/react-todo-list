@@ -1,4 +1,11 @@
-import React, { useReducer, useRef, useCallback, useState } from 'react';
+import React, {
+  useReducer,
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+} from 'react';
+
 import TodoTemplate from './components/TodoTemplate';
 import TodoInsert from './components/TodoInsert';
 import TodoList from './components/TodoList';
@@ -7,7 +14,7 @@ import LoginInputTemplate from './components/LoginInputTemplate';
 import './App.css';
 import firebase from './firebase';
 
-const todo_db = firebase.database().ref('todolist');
+const todo_db = firebase.database().ref('todolist'); //{}
 
 const init = {
   userInfo: null,
@@ -16,17 +23,23 @@ const init = {
 
 function appReducer(state = init, action) {
   switch (action.type) {
-    case 'LOGIN': // 새로 추가
+    case 'LOAD_TODO_LIST': {
+      return {
+        ...state,
+        todos: action.todoList,
+      };
+    }
+    case 'LOGIN':
       return {
         ...state,
         userInfo: { userId: action.userId },
       };
-    case 'LOGOUT': // 새로 추가
+    case 'LOGOUT':
       return {
         ...state,
         userInfo: null,
       };
-    case 'INSERT': // 새로 추가
+    case 'INSERT':
       return {
         ...state,
         todos: state.todos.concat(action.todo),
@@ -61,10 +74,20 @@ const App = () => {
   const [loginMode, setLoginMode] = useState(false);
   const [initTodo, setInitTodo] = useState('');
 
+  useEffect(() => {
+    todo_db.on('value', async (snapshot) => {
+      const todoData = await snapshot.val();
+      const todoList = [];
+      for (let id in todoData) {
+        todoList.push({ id, ...todoData[id] });
+      }
+      dispatch({ type: 'LOAD_TODO_LIST', todoList });
+    });
+  }, []);
+
   // 고유 값으로 사용 될 id
   // ref 를 사용하여 변수 담기
   const nextId = useRef(2501);
-  console.log(state);
 
   const onLogin = useCallback((userId) => {
     dispatch({ type: 'LOGIN', userId });
@@ -99,8 +122,8 @@ const App = () => {
     [state.userInfo],
   );
 
-  const onToggle = useCallback((id) => {
-    dispatch({ type: 'TOGGLE', id });
+  const onToggle = useCallback(async (id) => {
+    await dispatch({ type: 'TOGGLE', id });
   }, []);
 
   const onEdit = useCallback((id, editText) => {
