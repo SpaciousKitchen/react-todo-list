@@ -5,6 +5,10 @@ import TodoList from './components/TodoList';
 import TodoEdit from './components/TodoEdit';
 import LoginInputTemplate from './components/LoginInputTemplate';
 import './App.css';
+import firebase from './firebase';
+
+const todo_db = firebase.database().ref('todolist');
+
 const init = {
   userInfo: null,
   todos: [],
@@ -23,19 +27,16 @@ function appReducer(state = init, action) {
         userInfo: null,
       };
     case 'INSERT': // 새로 추가
-      // { type: 'INSERT', todo: { id: 1, text: 'todo', checked: false } }
       return {
         ...state,
         todos: state.todos.concat(action.todo),
       };
     case 'REMOVE': // 제거
-      // { type: 'REMOVE', id: 1 }
       return {
         ...state,
         todos: state.todos.filter((todo) => todo.id !== action.id),
       };
     case 'TOGGLE': // 토글
-      // { type: 'REMOVE', id: 1 }
       return {
         ...state,
         todos: state.todos.map((todo) =>
@@ -43,7 +44,6 @@ function appReducer(state = init, action) {
         ),
       };
     case 'EDIT': // 수정
-      // { type: 'REMOVE', id: 1 }
       return {
         ...state,
         todos: state.todos.map((todo) =>
